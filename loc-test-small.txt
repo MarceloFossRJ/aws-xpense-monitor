@@ -1,0 +1,160 @@
+nmnmnmnmnmnmnmnmnmnmnmnm
+Jekyll CheatSheet
+Feb 17, 2019 by  Marcelo Foss
+
+Table of Contents
+Jekyll Commands
+Folder Structure
+Global, Site and Page Variables
+Liquid Template Filters and Tags
+Permalinks
+Template Examples
+GitHub Pages
+Jekyll Commands
+$ jekyll help
+
+jekyll 2.5.3 -- Jekyll is a blog-aware, static site generator in Ruby
+
+Usage:
+
+  jekyll <subcommand> [options]
+
+Options:
+  -s, --source [DIR]  Source directory (defaults to ./)
+  -d, --destination [DIR]  Destination directory (defaults to ./_site)
+      --safe         Safe mode (defaults to false)
+  -p, --plugins PLUGINS_DIR1[,PLUGINS_DIR2[,...]]  Plugins directory (defaults to ./_plugins)
+      --layouts DIR  Layouts directory (defaults to ./_layouts)
+  -h, --help         Show this message
+  -v, --version      Print the name and version
+  -t, --trace        Show the full backtrace when an error occurs
+
+Subcommands:
+  serve, server, s      Serve your site locally
+  docs                  Launch local server with docs for Jekyll v2.5.3
+  build, b              Build your site
+  doctor, hyde          Search site and print specific deprecation warnings
+  new                   Creates a new Jekyll site scaffold in PATH
+  help                  Show the help message, optionally for a given subcommand.
+The build Command
+$ jekyll help build
+
+jekyll build -- Build your site
+
+Usage:
+
+  jekyll build [options]
+
+Options:
+      --config CONFIG_FILE[,CONFIG_FILE2,...]  Custom configuration file
+      --future       Publishes posts with a future date
+      --limit_posts MAX_POSTS  Limits the number of posts to parse and publish
+  -w, --[no-]watch   Watch for changes and rebuild
+      --force_polling  Force watch to use polling
+      --lsi          Use LSI for improved related posts
+  -D, --drafts       Render posts in the _drafts folder
+      --unpublished  Render posts that were marked as unpublished
+  -q, --quiet        Silence output.
+  -V, --verbose      Print verbose output.
+The serve Command
+$ jekyll help serve
+
+  jekyll serve [options]
+
+Options:
+      --config CONFIG_FILE[,CONFIG_FILE2,...]  Custom configuration file
+      --future       Publishes posts with a future date
+      --limit_posts MAX_POSTS  Limits the number of posts to parse and publish
+  -w, --[no-]watch   Watch for changes and rebuild
+      --force_polling  Force watch to use polling
+      --lsi          Use LSI for improved related posts
+  -D, --drafts       Render posts in the _drafts folder
+      --unpublished  Render posts that were marked as unpublished
+  -q, --quiet        Silence output.
+  -V, --verbose      Print verbose output.
+  -B, --detach       Run the server in the background (detach)
+  -P, --port [PORT]  Port to listen on
+  -H, --host [HOST]  Host to bind to
+  -b, --baseurl [URL]  Base URL
+  --skip-initial-build  Skips the initial site build which occurs before the server is
+Folder Structure
+Minimial:
+├── _config.yml                        # site configuration
+├── _posts                             # blog posts
+|   ├── 2015-01-01-week-1-factbook.md  #   filename format => YEAR-MONTH-DAY-TITLE.MARKUP
+|   ├── 2015-01-08-week-2-hoe.md
+|   └── 2015-01-15-week-3-slideshow.md
+├── _layouts
+|   ├── default.html                   # master layout template
+|   └── post.html                      # blog post template
+├── feed.xml                           # web feed template (e.g. in rss or atom format)
+└── index.html                         # index template
+will result in (with permalink: date):
+└── _site                                  # output build folder; site gets generated here
+    ├── 2015
+    |   └── 01
+    |       ├── 01
+    |       |   └── week-1-factbook.html   # blog post page
+    |       ├── 08
+    |       |   └── week-2-hoe.html        # another blog post page
+    |       └── 15
+    |           └── week-3-slideshow.html  # another blog post page
+    ├── feed.xml                           # web feed (e.g. in rss or atom format)
+    └── index.html                         # index page
+or result in (with permalink: none):
+└── _site                           # output build folder; site gets generated here
+    ├── week-1-factbook.html        # blog post page
+    ├── week-2-hoe.html             # another blog post page
+    ├── week-3-slideshow.html       # another blog post page
+    ├── feed.xml                    # web feed (e.g. in rss or atom format)
+    └── index.html                  # index page
+With post drafts, page collections, data stores and shared building blocks:
+├── _config.yml                        # site configuration
+├── _posts                             # blog posts
+|   ├── 2015-01-01-week-1-factbook.md  #  filename format => YEAR-MONTH-DAY-TITLE.MARKUP
+|   ├── 2015-01-08-week-2-hoe.md
+|   └── 2015-01-15-week-3-slideshow.md
+├── _drafts                            # upcoming posts; not yet published
+|   ├── week-4-kramdown.md             # note: no date required
+|   └── week-5-feedparser.md
+├── _layouts
+|   ├── default.html                   # master layout templates
+|   ├── book.html                      # book listing template
+|   └── post.html                      # blog post template
+├── _includes                          # shared building blocks
+|   ├── footer.html
+|   └── header.html
+├── _data                              # data store (formats available .yml, .json, .csv)
+|   └── members.csv
+├── _books                             # page collection (for books)
+|   ├── ruby-under-a-microscope.md
+|   └── learn-ruby-the-hard-way.md
+├── books
+|   └── index.html                     # book listing index template
+├── members.html                       # member listing template
+├── feed.xml                           # web feed template (e.g. in rss or atom format)
+└── index.html                         # site index template
+Note: The _post, _drafts, _layouts, _includes, _data, _books, _site folders must start with an underscore (_).
+
+The _posts Folder
+The post file name must follow the format: YEAR-MONTH-DAY-TITLE.MARKUP (e.g. 2015-01-15-week-3-slideshow.md). The permalinks can be customized for each post, but the date and markup language are determined by the file name.
+
+├── _posts
+|   ├── 2015-01-01-week-1-factbook.md    # e.g. date=2015-01-01, markup=md
+|   ├── 2015-01-08-week-2-hoe.md         #      date=2015-01-08, markup=md
+|   └── 2015-01-15-week-3-slideshow.md   #      date=2015-01-15, markup=md
+Front Matter
+---
+layout: post
+title:  "Week #3 - slideshow gem - a free web alternative to PowerPoint and Keynote in Ruby"
+---
+Tips & Tricks
+Including images and resources
+
+![Ruby under a Microscope Book Cover](https://marcelofossrj.github.io/i/book-ruby-under-a-microscope.png)
+
+[Hoe PDF Booklet](http://docs.seattlerb.org/hoe/Hoe.pdf); 6 Pages
+The _draft Folder
+Drafts are unpublished posts without a date.
+
+├── _draft
