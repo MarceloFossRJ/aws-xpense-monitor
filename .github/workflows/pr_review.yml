@@ -1,0 +1,36 @@
+name: Pull request review
+
+# trigger workflow on a PR
+on: [pull_request] 
+jobs:
+  #job identifier
+  automate-pullrequest-review:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Approve pull request
+        # condition to run the action
+        if: github.actor == 'dependabot[bot]'
+
+        # location of the action to run
+        uses: andrewmusgrave/automatic-pull-request-review@0.0.5
+
+        # action argument
+        with:
+          # GITHUB_TOKEN is an automatically generated secret for authentication
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          # Approve the pull request automatically if it is by dependabot
+          event: APPROVE
+          # Comment of the review
+          body: 'Thank you dependabot 🎊'
+  check_pr_size:
+    name: Check PR size doesn't break set limit
+    runs-on: ubuntu-latest
+    needs: automate-pullrequest-review
+    steps:
+      # checkout your code with your git history
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: maidsafe/pr_size_checker@v2
+        with:
+          max_lines_changed: 200
